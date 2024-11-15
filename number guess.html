@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number Game</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f5af19, #f12711);
+            color: #333;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .game-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 320px;
+            position: relative;
+        }
+
+        p {
+            margin: 1rem 0;
+            color: #555;
+        }
+
+        input[type="number"] {
+            padding: 0.5rem;
+            font-size: 1rem;
+            width: calc(100% - 1rem);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #f12711;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background-color: #f55d42;
+        }
+
+        .message {
+            margin-top: 1rem;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .attempts {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Success Animation */
+        .message.success {
+            animation: pop 0.6s ease forwards;
+            color: #28a745;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Guess the Number Game</h1>
+    <div class="game-container">
+        <p>Guess a number between 1 and 100:</p>
+        <input type="number" id="guess" min="1" max="100" placeholder="Enter your guess">
+        <button onclick="checkGuess()">Submit Guess</button>
+        <p class="message" id="message"></p>
+        <p class="attempts">Attempts: <span id="attempts">0</span></p>
+        <button onclick="resetGame()">Restart Game</button>
+    </div>
+
+    <!-- Confetti Script -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        // JavaScript Logic
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+
+        function checkGuess() {
+            const userGuess = Number(document.getElementById("guess").value);
+            const message = document.getElementById("message");
+            attempts++;
+            document.getElementById("attempts").textContent = attempts;
+
+            if (userGuess < 1 || userGuess > 100) {
+                message.textContent = "Please enter a number between 1 and 100.";
+                message.classList.remove('success');
+            } else if (userGuess > randomNumber) {
+                message.textContent = "Too high! Try again.";
+                message.classList.remove('success');
+            } else if (userGuess < randomNumber) {
+                message.textContent = "Too low! Try again.";
+                message.classList.remove('success');
+            } else {
+                message.textContent = `Correct! You guessed it in ${attempts} attempts.`;
+                message.classList.add('success');
+                launchConfetti();  // Trigger confetti on success
+            }
+        }
+
+        function resetGame() {
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById("attempts").textContent = attempts;
+            document.getElementById("guess").value = "";
+            document.getElementById("message").textContent = "New game started! Guess a number.";
+            document.getElementById("message").classList.remove('success');
+        }
+
+        function launchConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    </script>
+</body>
+</html>
